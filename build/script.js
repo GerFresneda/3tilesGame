@@ -1,22 +1,5 @@
-var casillas = 10,
-cambioFondo = 1,
-puntuacion = 0,
-gameOver = false,
-sonidoPieza = null,
-sonidoRomper = null,
-imposible1 = false,
-imposible2 = false,
-imposible3 = false,
-resetPieza = false,
-haTocado1 = false, haTocado2 = false, haTocado3 = false, //para saber que pieza es la seleccionada
-vaciasTodas = true, /// Variable para saber si las tres piezas se han colocado
-vacia1 = true, //saber si la pieza1 se ha colocado o no
-vacia2 = true, //saber si la pieza2 se ha colocado o no
-vacia3 = true, //saber si la pieza3 se ha colocado o no
-pieza1C = null,
-pieza2C = null,
-pieza3C = null,
-MatrizTablero = [],
+// CONSTS 
+const casillas = 10,
 tablero = 300,
 dimension = Number(tablero/casillas),
 columnas = Number(tablero/10),
@@ -25,23 +8,12 @@ tablonPiezas = Number(tablero/2),
 columnas5x5 = Number(tablonPiezas/5),
 fila5x5 = Number(tablonPiezas/5),
 colorArray = [
-		'#D40424',
-		'#E9F0F7',
-		'#AEC5D6',
-		'#223040',
-		'#101D29',
-	],
-tipo = [
-		[6,11,16,17,18],           //L
-		[7,12],					   //i	
-		[12],					   //.
-		[10,11,12,13,14],		   //--
-		[11,12,13],				   //-
-		[6,7,11,12],	           //square
-		[7,12,17,22],			   //I
-		[6,7,8,11,12,13,16,17,18], //SQUARE
-		[6,7,11]				   //L invertida
-	],
+	'#D40424',
+	'#E9F0F7',
+	'#AEC5D6',
+	'#223040',
+	'#101D29',
+],
 colores = ['purple','red','green','blue','yellow','brown','pink','orange','lightgreen'],	
 posicionesPieza = [
 	[0,0],[fila5x5,0],[fila5x5*2,0],[fila5x5*3,0],[fila5x5*4,0],
@@ -63,29 +35,67 @@ posicionesTablero = [
 	[[0,columnas*9],[filas,columnas*9],[filas*2,columnas*9],[filas*3,columnas*9],[filas*4,columnas*9],[filas*5,columnas*9],[filas*6,columnas*9],[filas*7,columnas*9],[filas*8,columnas*9],[filas*9,columnas*9]]
 ],
 matrizRotacion = [
-	[20,15,10,5,0,
-	21,16,11,6,1,
-	22,17,12,7,2,
-	23,18,13,8,3,
-	24,19,14,8,4],
-	[24,23,22,21,20,
-	19,18,17,16,15,
-	14,13,12,11,10,
-	9,8,7,6,5,
-	4,3,2,1,0],
-	[4,9,14,19,24,
-	3,8,13,18,23,
-	2,7,12,17,22,
-	1,6,11,16,21,
-	0,5,10,15,20]
+	[
+		20,15,10,5,0,
+		21,16,11,6,1,
+		22,17,12,7,2,
+		23,18,13,8,3,
+		24,19,14,8,4
+	],
+	[	24,23,22,21,20,
+		19,18,17,16,15,
+		14,13,12,11,10,
+		9,8,7,6,5,
+		4,3,2,1,0
+	],
+	[	4,9,14,19,24,
+		3,8,13,18,23,
+		2,7,12,17,22,
+		1,6,11,16,21,
+		0,5,10,15,20
+	]
+],
+tipo = [
+	[6,11,16,17,18],           // L
+	[7,12],					   // Small I
+	[12],					   // One unit square
+	[10,11,12,13,14],		   // Big horitzontal line
+	[11,12,13],				   // Small horitzontal line
+	[6,7,11,12],	           // Small square
+	[7,12,17,22],			   // Big I
+	[6,7,8,11,12,13,16,17,18], // Big square
+	[6,7,11]				   // Inverted L
 ];
-/* 		  PIEZAS
+			
+/* 	   PIECES MATRIX
 	0   1   2   3	4
 	5	6	7	8	9
 	10	11	12	13	14
 	15	16	17	18	19
 	20	21	22	23	24
 */	
+
+//VARS
+var puntuacion = 0,
+gameOver = false,
+sonidoPieza = null,
+sonidoRomper = null,
+imposible1 = false,
+imposible2 = false,
+imposible3 = false,
+resetPieza = false,
+haTocado1 = false, haTocado2 = false, haTocado3 = false, // To know which piece is selected
+vaciasTodas = true, // Variable para saber si las tres piezas se han colocado
+vacia1 = true, // To know if piece number 1 was placed
+vacia2 = true, // To know if piece number 2 was placed
+vacia3 = true, // To know if piece number 3 was placed
+pieza1C = null,
+pieza2C = null,
+pieza3C = null,
+MatrizTablero = [];
+
+
+// Where the magic begins
 function prepararTablero(){
 	InicializarMatrices();
 	tableroInicial();
@@ -99,55 +109,57 @@ function prepararTablero(){
 }
 
 function actualizarPuntuacion(){
-	document.querySelector('#puntos').innerHTML = `<strong>`+puntuacion+ `</strong>`;
+	document.querySelector('#puntos').innerHTML = `<strong>`+ puntuacion + `</strong>`;
 }
+
 function tableroInicial(){
 	let cvs = document.querySelector('#cv1');
 	cvs.width = tablero;
 	cvs.height = tablero;
-
 	ctx = cvs.getContext('2d');
 	ctx.font = '20px Arial';
 	ctx.textAlign = 'center';
 	ctx.strokeStyle = "black";
-		for(var i = 0; i<casillas; i++){
-			for(var j = 0; j<casillas; j++){
-				if(MatrizTablero[i][j][0] !=0){
-					ctx.fillStyle = MatrizTablero[i][j][1];
-					ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
-					ctx.rect(i*dimension, j*dimension, dimension, dimension);
-					ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
-				}
-				else{
-					ctx.fillStyle = '#20B2AA';
-					ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
-					ctx.rect(i*dimension, j*dimension, dimension, dimension);
-					ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
-				}
+	for(var i = 0; i<casillas; i++){
+		for(var j = 0; j<casillas; j++){
+			if(MatrizTablero[i][j][0] != 0){
+				ctx.fillStyle = MatrizTablero[i][j][1];
+				ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
+				ctx.rect(i*dimension, j*dimension, dimension, dimension);
+				ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
+			}
+			else{
+				ctx.fillStyle = '#20B2AA';
+				ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
+				ctx.rect(i*dimension, j*dimension, dimension, dimension);
+				ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
 			}
 		}
-		ctx.stroke();
+	}
+	ctx.stroke();
 }
+
 function redrawTablero(){
 	let cvs = document.querySelector('#cv1');
 	ctx = cvs.getContext('2d');
 	ctx.clearRect(0, 0, cvs.width, cvs.height);
-		for(var i = 0; i<casillas; i++){
-			for(var j = 0; j<casillas; j++){
-				if(MatrizTablero[i][j][0] !=0){
-					ctx.fillStyle = MatrizTablero[i][j][1];
-					ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
-					ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
-				}
-				else{
-					ctx.fillStyle = '#20B2AA';
-					ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
-					ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
-				}
+	for(var i = 0; i<casillas; i++){
+		for(var j = 0; j<casillas; j++){
+			if(MatrizTablero[i][j][0] !=0){
+				ctx.fillStyle = MatrizTablero[i][j][1];
+				ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
+				ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
+			}
+			else{
+				ctx.fillStyle = '#20B2AA';
+				ctx.strokeRect(i*dimension, j*dimension, dimension, dimension);
+				ctx.fillRect(i*dimension, j*dimension, dimension, dimension);
 			}
 		}
-		ctx.stroke();
+	}
+	ctx.stroke();
 }
+
 function comprobarOcupada(fila,columna,pieza,auxFila,auxColumna){
 	var ocupada = false;
 	auxFila = fila-2;
@@ -167,92 +179,84 @@ function comprobarOcupada(fila,columna,pieza,auxFila,auxColumna){
 	}
 	return ocupada;
 }
+
 var aux1 = 0;
 var aux2 = 0;
 var auxFila = 0;
 var auxColumna = 0;
 var fila = 0;
 var columna = 0;
+
 function Hover(pieza){
 	let cvsTablero = document.querySelector('#cv1');
 	ctxTablero = cvsTablero.getContext('2d');
 	cvsTablero.onmousemove = function(e){
 		ctxTablero.fillStyle = pieza.color;
 		var ocupada = false;
-			if(haTocado1 == true || haTocado2 == true || haTocado3 == true){
-				ctxTablero.fillStyle = pieza.color;
-			
-				fila = Math.trunc(e.offsetX/dimension);
-				columna = Math.trunc(e.offsetY/dimension); 
-				if(fila == 10){
-					fila = 9;
-				}
-				if(columna == 10){
-					columna = 9;
-				}
-				//SI LA POSICION NO COINCIDE CON LA DEL RATON
-				if(aux1 != fila || aux2 != columna){
-					aux1 = fila;
-					aux2 = columna;
-					redrawTablero();
-				}
-				
+		if(haTocado1 == true || haTocado2 == true || haTocado3 == true){
+			ctxTablero.fillStyle = pieza.color;
+			fila = Math.trunc(e.offsetX/dimension);
+			columna = Math.trunc(e.offsetY/dimension); 
+			if(fila == 10){
+				fila = 9;
+			}
+			if(columna == 10){
+				columna = 9;
+			}
+			//If position does not match with cursor
+			if(aux1 != fila || aux2 != columna){
+				aux1 = fila;
+				aux2 = columna;
+				redrawTablero();
+			}
+			auxFila = fila-2;
+			auxColumna = columna-2;
+			if(comprobacionHover(pieza,fila,columna) == pieza.cantidad){
+				if(comprobarOcupada(fila,columna,pieza,auxFila,auxColumna)==false){
+					// Hover animation when it matches
 					auxFila = fila-2;
 					auxColumna = columna-2;
-					//console.log("AuxFila: "+auxFila+' AuxColumna: '+auxColumna);
-					
-					if(comprobacionHover(pieza,fila,columna) == pieza.cantidad){
-						if(comprobarOcupada(fila,columna,pieza,auxFila,auxColumna)==false){
-							/// HACER EL HOVER CUANDO ENCAJA
-							auxFila = fila-2;
-							auxColumna = columna-2;
-							for(var x = 0 ; x<5; x++){
-								auxColumna = columna-2;
-								for(var y = 0; y<5; y++){
-									if(pieza.baseTablero[x][y] == 1){
-										//console.log(auxFila+ " "+ auxColumna);
-										//console.log("pieza.baseTablero["+x+"]["+y+"]: "+pieza.baseTablero[x][y]);
-										ctxTablero.fillStyle = pieza.color;
-										ctxTablero.strokeRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										ctxTablero.rect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										ctxTablero.fillRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										
-									}
-									auxColumna++;
-								}
-								auxFila++;
+					for(var x = 0 ; x<5; x++){
+						auxColumna = columna-2;
+						for(var y = 0; y<5; y++){
+							if(pieza.baseTablero[x][y] == 1){
+								ctxTablero.fillStyle = pieza.color;
+								ctxTablero.strokeRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
+								ctxTablero.rect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
+								ctxTablero.fillRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
 							}
-							ctxTablero.stroke();
+							auxColumna++;
 						}
-						else{
-							/// HACER EL HOVER CUANDO LA PIEZA NO ENCAJA
-							ctxTablero.fillStyle = 'gray';
-							auxFila = fila-2;
-							auxColumna = columna-2;
-							for(var x = 0 ; x<5; x++){
-								auxColumna = columna-2;
-								for(var y = 0; y<5; y++){
-									if(pieza.baseTablero[x][y] == 1){
-										//console.log(auxFila+ " "+ auxColumna);
-										//console.log("pieza.baseTablero["+x+"]["+y+"]: "+pieza.baseTablero[x][y]);
-										ctxTablero.strokeRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										ctxTablero.rect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										ctxTablero.fillRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
-										
-									}
-									auxColumna++;
-								}
-								auxFila++;
-							}
-							ctxTablero.stroke();		
-						}
+						auxFila++;
 					}
-			}		
+					ctxTablero.stroke();
+				}
+				else{
+					// Hover animation when it does not match
+					ctxTablero.fillStyle = 'gray';
+					auxFila = fila-2;
+					auxColumna = columna-2;
+					for(var x = 0 ; x<5; x++){
+						auxColumna = columna-2;
+						for(var y = 0; y<5; y++){
+							if(pieza.baseTablero[x][y] == 1){
+								ctxTablero.strokeRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
+								ctxTablero.rect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
+								ctxTablero.fillRect(auxFila*dimension, auxColumna*dimension, dimension, dimension);
+							}
+							auxColumna++;
+						}
+						auxFila++;
+					}
+					ctxTablero.stroke();		
+				}
+			}
+		}		
 	}
-	///DIBUJAR LA PIEZA AL HACER CLICK
-	cvsTablero.onmouseup = function(e){
+	// Draw the piece when clicking
+	cvsTablero.onclick = function(e){
 		if(comprobacionHover(pieza,fila,columna) == pieza.cantidad){
-			if(comprobarOcupada(fila,columna,pieza,auxFila,auxColumna)==false){
+			if(comprobarOcupada(fila,columna,pieza,auxFila,auxColumna) == false){
 				if(haTocado1 == true || haTocado2 == true || haTocado3 == true){
 					auxFila = fila-2;
 					auxColumna = columna-2;
@@ -268,7 +272,7 @@ function Hover(pieza){
 						auxFila++;
 					}
 					sonidoPieza.play();
-					puntuacion+=pieza.cantidad;
+					puntuacion += pieza.cantidad;
 					resetPieza = true;
 					if(resetPieza == true){
 						if(haTocado1 == true){
@@ -280,7 +284,6 @@ function Hover(pieza){
 							pieza1C = null;
 							vaciarTableroPiezas(1);
 							tableroPiezas('pieza1');
-							
 						}
 						else if(haTocado2 == true){
 							resetPieza = false;
@@ -290,7 +293,6 @@ function Hover(pieza){
 							pieza2C = null;
 							vaciarTableroPiezas(2);
 							tableroPiezas('pieza2');
-							
 						}
 						else if(haTocado3 == true){
 							resetPieza = false;
@@ -299,8 +301,7 @@ function Hover(pieza){
 							imposible3 = true;
 							pieza3C = null;
 							vaciarTableroPiezas(3);
-							tableroPiezas('pieza3');
-							
+							tableroPiezas('pieza3');	
 						}
 						if(vacia1 == true && vacia2 == true && vacia3 == true){
 							vaciasTodas = true;
@@ -308,7 +309,6 @@ function Hover(pieza){
 							imposible2 = false;
 							imposible3 = false;
 							Piezas();
-							
 						}
 						comprobarLineas();
 						endGame();
@@ -318,38 +318,36 @@ function Hover(pieza){
 		}
 	}
 	cvsTablero.onmouseout = function(e){
-			if(haTocado1 == true){
-				redrawTablero();
-				let cvs1 = document.querySelector('#pieza1');
-				ctx1 = cvs1.getContext('2d');
-			}
-			else if(haTocado2 == true){
-				redrawTablero();
-				let cvs2 = document.querySelector('#pieza2');
-				ctx2 = cvs2.getContext('2d');
-			}
-			else if(haTocado3 == true){
-				redrawTablero();
-				let cvs3 = document.querySelector('#pieza3');
-				ctx3 = cvs3.getContext('2d');
-			}
+		if(haTocado1 == true){
+			redrawTablero();
+			let cvs1 = document.querySelector('#pieza1');
+			ctx1 = cvs1.getContext('2d');
+		}
+		else if(haTocado2 == true){
+			redrawTablero();
+			let cvs2 = document.querySelector('#pieza2');
+			ctx2 = cvs2.getContext('2d');
+		}
+		else if(haTocado3 == true){
+			redrawTablero();
+			let cvs3 = document.querySelector('#pieza3');
+			ctx3 = cvs3.getContext('2d');
+		}
 	}
-
 }
+
 function endGame(){
-	if(pieza1C!=null){
+	if(pieza1C != null){
 		imposible1 = true;
-		//console.log('Sigue viva');
 		for(var x = 0; x<casillas; x++){
 			for(var y = 0; y<casillas; y++){
 				if(comprobacionHover(pieza1C,x,y) == pieza1C.cantidad){
-					if(comprobarOcupada(x,y,pieza1C,fila-2,columna-2)==false){
+					if(comprobarOcupada(x,y,pieza1C,fila-2,columna-2) == false){
 						imposible1 = false;
 					}
 				}
 			}
 		}
-		//console.log(imposible1);
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
 			console.log("Se acabo: "+gameOver);
@@ -358,7 +356,6 @@ function endGame(){
 	}
 	if(pieza2C!=null){
 		imposible2 = true;
-		//console.log('Sigue viva2');
 		for(var x = 0; x<casillas; x++){
 			for(var y = 0; y<casillas; y++){
 				if(comprobacionHover(pieza2C,x,y) == pieza2C.cantidad){
@@ -368,7 +365,6 @@ function endGame(){
 				}
 			}
 		}
-		//console.log(imposible2);
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
 			console.log("Se acabo: "+gameOver);
@@ -377,7 +373,6 @@ function endGame(){
 	}
 	if(pieza3C!=null){
 		imposible3 = true;
-		//console.log('Sigue viva3');
 		for(var x = 0; x<casillas; x++){
 			for(var y = 0; y<casillas; y++){
 				if(comprobacionHover(pieza3C,x,y) == pieza3C.cantidad){
@@ -387,7 +382,6 @@ function endGame(){
 				}
 			}
 		}
-		//console.log(imposible3);
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
 			console.log("Se acabo: "+gameOver);
@@ -395,7 +389,8 @@ function endGame(){
 		}
 	}
 }
-//Una vez perdido se invoca a restart para empezar de nuevo
+
+// Once the player lose
 function restart(){
 	let cambiarDisplayModal = document.querySelector('#mensajemodal');
 	let mensajeModal = document.querySelector('.contenidomodal');
@@ -412,21 +407,15 @@ function restart(){
 		</form>
 		<br>
 	</div>`;
-	//<a href="index.html" class="modalbutton" onclick="closeModal(1)">Intentar de nuevo</a>
-	//Hacemos que el modal sea visible
 	cambiarDisplayModal.style.display = "block";
 }
 
 function closeModal(num)
 {
-	//Basicamente jugamos con el display para hacer que desaparezca o aparezca
 	let cambiarDisplayModal = document.querySelector('#mensajemodal');
 	cambiarDisplayModal.style.display = "none";
-	//Caso 0 : Acceso correcto login
-	//Caso 1 : Acceso incorrecto login
 	switch(num){
 		case 0:
-			
 			break;
 		case 1:
 			location.reload();
@@ -436,16 +425,18 @@ function closeModal(num)
 	}
 }
 
-//Funcion para comprobar si hay filas o columnas completas en el tablero para eliminarlas
+// Check for columns or rows completed
 function comprobarLineas(){
-	var fila = 0;
-	var columna = 0;
-	var borrarFila = true;
-	var borrarColumna = true;
-	var columnasEliminar = [];
-	var filasEliminar = [];
-	var comboBreaker = 0; // Variable que guarda cuantas filas y columna rompen para multiplicar la puntuacion
-	///COMPROBAR COLUMNAS GUARDANDO LAS COMPLETADAS EN UN ARRAY QUE LUEGO UTILIZAREMOS PARA BORRAR COLUMNAS
+
+	let fila = 0,
+	columna = 0,
+	borrarFila = true,
+	borrarColumna = true,
+	columnasEliminar = [],
+	filasEliminar = [],
+	comboBreaker = 0; // Counts how many columns and rows are full in order to add bonus points
+
+	// Check columns saving the ones completed in 'columnasEliminar' array. Later we'll use it for erasing
 	for(var x = 0; x<10; x++){
 		borrarColumna = true;
 		columna = x;
@@ -454,13 +445,13 @@ function comprobarLineas(){
 				borrarColumna = false;
 			}
 		}
-		//columna llena
+		// Column completed
 		if(borrarColumna == true){
 			columnasEliminar.push(columna);
 			comboBreaker++;
 		}
 	}
-	///COMPROBAR FILAS GUARDANDO LAS COMPLETADAS EN UN ARRAY QUE LUEGO UTILIZAREMOS PARA BORRAR FILAS
+	// Check rows saving the ones completed in 'filasEliminar' array. Later we'll use it for erasing
 	for(var x = 0; x<10; x++){
 		borrarFila = true;
 		fila = x;
@@ -469,15 +460,15 @@ function comprobarLineas(){
 				borrarFila = false;
 			}
 		}
-		//fila llena
+		// Row completed
 		if(borrarFila == true){
 			filasEliminar.push(fila);
 			comboBreaker++;
 		}
 	}
 
-	//ELIMINAR FILAS Y COLUMNAS
-	if(columnasEliminar!=null){
+	// Delete rows and columns
+	if(columnasEliminar != null){
 		for(var g = 0; g<columnasEliminar.length;g++){
 			for(var cont = 0; cont<10; cont++){
 				MatrizTablero[columnasEliminar[g]][cont][0] = 0;
@@ -485,7 +476,7 @@ function comprobarLineas(){
 			}	
 		}
 	}
-	if(filasEliminar!=null){
+	if(filasEliminar != null){
 		for(var f = 0; f<filasEliminar.length; f++){
 			for(var cont = 0; cont<10; cont++){
 				MatrizTablero[cont][filasEliminar[f]][0] = 0;
@@ -494,7 +485,7 @@ function comprobarLineas(){
 		}
 	}
 	if(comboBreaker == 1){
-		puntuacion+=10;
+		puntuacion += 10;
 		sonidoRomper.play();
 	}
 	else if(comboBreaker>1){
@@ -505,6 +496,7 @@ function comprobarLineas(){
 	actualizarPuntuacion();
 	redrawTablero();
 }
+
 function comprobacionHover(pieza, fila, columna){
 	let x = 0;
 	let y = 0;
@@ -517,6 +509,7 @@ function comprobacionHover(pieza, fila, columna){
 	let aux2 = 0;
 	let max1 = 0;
 	let max2 = 0;
+	// This is an IF statement OCEAN but it did the work
 	if(fila == 0  && columna == 0){
 		x = 3;
 		y = 3;
@@ -744,30 +737,29 @@ function comprobacionHover(pieza, fila, columna){
 	}
 	let var1 = aux1;
 	let var2 = aux2;
-	var choca = false;
 	for(var i=0; i<x; i++)
+	{
+		MatrizPartida[i] = [];
+		for(var j=0; j<y; j++)
 		{
-			MatrizPartida[i] = [];
-			for(var j=0; j<y; j++)
-			{
-				MatrizPartida[i][j] = pieza.baseTablero[var1][var2];
-				if(MatrizPartida[i][j]==1){
-					cont++;
-				}
-				var2++;
-				if(var2 == max2){
-					var2 = aux2;
-				}
+			MatrizPartida[i][j] = pieza.baseTablero[var1][var2];
+			if(MatrizPartida[i][j] == 1){
+				cont++;
 			}
-			var1++;
-			if(var1 == max1){
-				var1 = aux1;
+			var2++;
+			if(var2 == max2){
+				var2 = aux2;
 			}
 		}
+		var1++;
+		if(var1 == max1){
+			var1 = aux1;
+		}
+	}
 	return cont;
 }
 
-/// OBJETO PIEZA
+// Piece object: we pase the base form, color and rotation
 function Pieza(base,color,rotacion){
 	this.base = base;
 	this.color = color;
@@ -776,9 +768,9 @@ function Pieza(base,color,rotacion){
 	this.rotacion = rotacion;
 	this.cantidad = this.base.length;
 
-	var rotarOno = Math.floor(Math.random()*4);
+	let rotarOno = Math.floor(Math.random()*4);
 	if(rotarOno != 0){
-		var auxiliar = [];
+		let auxiliar = [];
 		for(var x = 0; x<this.base.length;x++){
 			auxiliar[x] = this.rotacion[this.base[x]];
 		}
@@ -790,45 +782,38 @@ function Pieza(base,color,rotacion){
 	for(var x = 0;x<5;x++){
 		this.baseTablero[x] = [];
 		for(var y=0;y<5;y++){
-			this.baseTablero[x][y]=0;
+			this.baseTablero[x][y] = 0;
 		}
 	}
 	for(var x = 0; x<this.base.length;x++){
 		this.baseTablero[Math.trunc(Number(this.base[x]%5))][Math.trunc(this.base[x]/5)] = 1;
 	}
 }
-///Funcion que crea las tres piezas y ha de mantener el loop siempre que las tres se lleven al tablero
+
+// Function that creates the three pieces and keeps the loop of creating three more when all pieces are positioned
 function Piezas(){
 	if(vaciasTodas == true){
-		var randomizador = Math.floor(Math.random() * 9);
-		var randomizador2 = Math.floor(Math.random() * 9);
-		var randomizador3 = Math.floor(Math.random() * 9);
+		let randomizador = Math.floor(Math.random() * 9);
+		let randomizador2 = Math.floor(Math.random() * 9);
+		let randomizador3 = Math.floor(Math.random() * 9);
 
-		pieza1C = new Pieza(tipo[randomizador],colores[randomizador],matrizRotacion[Math.floor(Math.random()*3)]);
-		pieza2C = new Pieza(tipo[randomizador2],colores[randomizador2],matrizRotacion[Math.floor(Math.random()*3)]);
-		pieza3C = new Pieza(tipo[randomizador3],colores[randomizador3],matrizRotacion[Math.floor(Math.random()*3)]);
+		pieza1C = new Pieza(tipo[randomizador], colores[randomizador], matrizRotacion[Math.floor(Math.random()*3)]);
+		pieza2C = new Pieza(tipo[randomizador2], colores[randomizador2], matrizRotacion[Math.floor(Math.random()*3)]);
+		pieza3C = new Pieza(tipo[randomizador3], colores[randomizador3], matrizRotacion[Math.floor(Math.random()*3)]);
 
-		
-		//console.log(pieza1C.coordenadas);
-        // DIBUJAR LAS PIEZAS EN SUS CANVAS
-
+        // Draw pieces on the canvas
 		let cvs1 = document.querySelector('#pieza1');
 		ctx1 = cvs1.getContext('2d');
-		ctx1.fillStyle = pieza1C.color; // Se establece el color
-
-
+		ctx1.fillStyle = pieza1C.color;
 		for(var g = 0; g<pieza1C.base.length;g++){
 			ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
 			ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
 			ctx1.fill();
 			ctx1.stroke();
 		}
-		
-
 		let cvs2 = document.querySelector('#pieza2');
 		ctx2 = cvs2.getContext('2d');
-		ctx2.fillStyle = pieza2C.color; // Se establece el color
-
+		ctx2.fillStyle = pieza2C.color;
 		for(var g = 0; g<pieza2C.base.length;g++){
 			ctx2.strokeRect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
 			ctx2.rect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
@@ -837,159 +822,152 @@ function Piezas(){
 		}
 		let cvs3 = document.querySelector('#pieza3');
 		ctx3 = cvs3.getContext('2d');
-		ctx3.fillStyle = pieza3C.color; // Se establece el color
-
+		ctx3.fillStyle = pieza3C.color;
 		for(var g = 0; g<pieza3C.base.length;g++){
 			ctx3.strokeRect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
 			ctx3.rect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
 			ctx3.fill();
 			ctx3.stroke();
 		}
-		// TODAS LAS PIEZAS PUESTAS EN SUS CANVAS
 		vaciasTodas = false;
 		vacia1 = false;
 		vacia2 = false;
 		vacia3 = false;
-		
 		cvs1.addEventListener("click", click(pieza1C),false);
 		cvs2.addEventListener("click", click(pieza2C),false);
 		cvs3.addEventListener("click", click(pieza3C),false);
 	}
 }
 function click(variable){
-			if(variable == pieza1C){
-				let cvs1 = document.querySelector('#pieza1');
-				ctx1 = cvs1.getContext('2d');
-				ctx1.fillStyle = pieza1C.color;
-				cvs1.onmousedown = function(e){
-					if(vacia1 == false){
-						if(haTocado2 == false && haTocado3 == false){
-							var filass = Math.floor(e.offsetX);
-							var columnass = Math.floor(e.offsetY);
-							for(var x = 0; x<pieza1C.base.length;x++){
-								var posicionX = pieza1C.coordenadas[x][0];
-								var posicionY = pieza1C.coordenadas[x][1];
-								if(filass>=posicionX && filass <(posicionX+fila5x5)){
-									if(columnass>=posicionY && columnass <(posicionY+fila5x5)){
-										if(haTocado1 == true){
-											ctx1.strokeStyle="#333";
-											for(var g = 0; g<pieza1C.base.length;g++){
-												ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
-												ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
-												ctx1.fill();
-												ctx1.stroke();
-											}
-											haTocado1 = false;
-										}
-										else{
-											haTocado1 = true;
-											///QUE BRILLE
-											ctx1.strokeStyle="white";
-											for(var g = 0; g<pieza1C.base.length;g++){
-												ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
-												ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
-												ctx1.fill();
-												ctx1.stroke();
-											}
-											Hover(pieza1C);
-										}
+	if(variable == pieza1C){
+		let cvs1 = document.querySelector('#pieza1');
+		ctx1 = cvs1.getContext('2d');
+		ctx1.fillStyle = pieza1C.color;
+		cvs1.onclick = function(e){
+			if(vacia1 == false){
+				if(haTocado2 == false && haTocado3 == false){
+					let filass = Math.floor(e.offsetX);
+					let columnass = Math.floor(e.offsetY);
+					for(var x = 0; x < pieza1C.base.length;x++){
+						let posicionX = pieza1C.coordenadas[x][0];
+						let posicionY = pieza1C.coordenadas[x][1];
+						if(filass >= posicionX && filass < (posicionX+fila5x5)){
+							if(columnass >= posicionY && columnass < (posicionY+fila5x5)){
+								if(haTocado1 == true){
+									ctx1.strokeStyle = "#333";
+									for(var g = 0; g < pieza1C.base.length;g++){
+										ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
+										ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
+										ctx1.fill();
+										ctx1.stroke();
 									}
+									haTocado1 = false;
+								}
+								else{
+									haTocado1 = true;
+									// Glowing when it's touched
+									ctx1.strokeStyle = "white";
+									for(var g = 0; g < pieza1C.base.length;g++){
+										ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
+										ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
+										ctx1.fill();
+										ctx1.stroke();
+									}
+									Hover(pieza1C);
 								}
 							}
-						console.log(e.offsetX +" "+ e.offsetY+ " "+ haTocado1);
 						}
 					}
 				}
 			}
-			else if(variable == pieza2C){
-				let cvs2 = document.querySelector('#pieza2');
-				ctx2 = cvs2.getContext('2d');
-				ctx2.fillStyle = pieza2C.color; // Se establece el color
-				cvs2.onmousedown = function(e){
-					if(vacia2 == false){
-						if(haTocado1==false && haTocado3 == false){
-							var filass = Math.floor(e.offsetX);
-							var columnass = Math.floor(e.offsetY);
-							for(var x = 0; x<pieza2C.base.length;x++){
-								var posicionX = pieza2C.coordenadas[x][0];
-								var posicionY = pieza2C.coordenadas[x][1];
-								if(filass>=posicionX && filass <(posicionX+fila5x5)){
-									if(columnass>=posicionY && columnass <(posicionY+fila5x5)){
-										if(haTocado2 == true){
-											ctx2.strokeStyle="#333";
-											for(var g = 0; g<pieza2C.base.length;g++){
-												ctx2.strokeRect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
-												ctx2.rect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
-												ctx2.fill();
-												ctx2.stroke();
-											}
-											haTocado2 = false;
-										}
-										else{
-											haTocado2 = true;
-											///QUE BRILLE
-											ctx2.strokeStyle="white";
-											for(var g = 0; g<pieza2C.base.length;g++){
-												ctx2.strokeRect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
-												ctx2.rect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
-												ctx2.fill();
-												ctx2.stroke();
-											}
-											Hover(pieza2C);
-										}
+		}
+	}
+	else if(variable == pieza2C){
+		let cvs2 = document.querySelector('#pieza2');
+		ctx2 = cvs2.getContext('2d');
+		ctx2.fillStyle = pieza2C.color; 
+		cvs2.onclick = function(e){
+			if(vacia2 == false){
+				if(haTocado1 == false && haTocado3 == false){
+					var filass = Math.floor(e.offsetX);
+					var columnass = Math.floor(e.offsetY);
+					for(var x = 0; x < pieza2C.base.length;x++){
+						var posicionX = pieza2C.coordenadas[x][0];
+						var posicionY = pieza2C.coordenadas[x][1];
+						if(filass >= posicionX && filass < (posicionX+fila5x5)){
+							if(columnass >= posicionY && columnass < (posicionY+fila5x5)){
+								if(haTocado2 == true){
+									ctx2.strokeStyle="#333";
+									for(var g = 0; g < pieza2C.base.length;g++){
+										ctx2.strokeRect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
+										ctx2.rect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
+										ctx2.fill();
+										ctx2.stroke();
 									}
+									haTocado2 = false;
+								}
+								else{
+									haTocado2 = true;
+									// Glowing when it's touched
+									ctx2.strokeStyle = "white";
+									for(var g = 0; g < pieza2C.base.length;g++){
+										ctx2.strokeRect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
+										ctx2.rect(pieza2C.coordenadas[g][0], pieza2C.coordenadas[g][1], filas, columnas);
+										ctx2.fill();
+										ctx2.stroke();
+									}
+									Hover(pieza2C);
 								}
 							}
-						//console.log(event.offsetX +" "+ event.offsetY+ " "+ haTocado2);
 						}
 					}
 				}
 			}
-			else if(variable == pieza3C){
-				let cvs3 = document.querySelector('#pieza3');
-				ctx3 = cvs3.getContext('2d');
-				ctx3.fillStyle = pieza3C.color; // Se establece el color
-				cvs3.onmousedown = function(e){
-					if(vacia3 == false){
-						if(haTocado1 == false && haTocado2 == false){
-							var filass = Math.floor(e.offsetX);
-							var columnass = Math.floor(e.offsetY);
-							for(var x = 0; x<pieza3C.base.length;x++){
-								var posicionX = pieza3C.coordenadas[x][0];
-								var posicionY = pieza3C.coordenadas[x][1];
-								if(filass>=posicionX && filass <(posicionX+fila5x5)){
-									if(columnass>=posicionY && columnass <(posicionY+fila5x5)){
-										if(haTocado3 == true){
-											ctx3.strokeStyle="#333";
-											for(var g = 0; g<pieza3C.base.length;g++){
-												ctx3.strokeRect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
-												ctx3.rect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
-												ctx3.fill();
-												ctx3.stroke();
-											}
-											haTocado3 = false;
-										}
-										else{
-											haTocado3 = true;
-											///QUE BRILLE
-											ctx3.strokeStyle="white";
-											for(var g = 0; g<pieza3C.base.length;g++){
-												ctx3.strokeRect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
-												ctx3.rect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
-												ctx3.fill();
-												ctx3.stroke();
-											}
-											Hover(pieza3C);
-										}
+		}
+	}
+	else if(variable == pieza3C){
+		let cvs3 = document.querySelector('#pieza3');
+		ctx3 = cvs3.getContext('2d');
+		ctx3.fillStyle = pieza3C.color;
+		cvs3.onclick = function(e){
+			if(vacia3 == false){
+				if(haTocado1 == false && haTocado2 == false){
+					var filass = Math.floor(e.offsetX);
+					var columnass = Math.floor(e.offsetY);
+					for(var x = 0; x < pieza3C.base.length;x++){
+						var posicionX = pieza3C.coordenadas[x][0];
+						var posicionY = pieza3C.coordenadas[x][1];
+						if(filass >= posicionX && filass < (posicionX+fila5x5)){
+							if(columnass >= posicionY && columnass <(posicionY+fila5x5)){
+								if(haTocado3 == true){
+									ctx3.strokeStyle = "#333";
+									for(var g = 0; g < pieza3C.base.length;g++){
+										ctx3.strokeRect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
+										ctx3.rect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
+										ctx3.fill();
+										ctx3.stroke();
 									}
+									haTocado3 = false;
+								}
+								else{
+									haTocado3 = true;
+									// Glowing when it's touched
+									ctx3.strokeStyle = "white";
+									for(var g = 0; g < pieza3C.base.length;g++){
+										ctx3.strokeRect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
+										ctx3.rect(pieza3C.coordenadas[g][0], pieza3C.coordenadas[g][1], filas, columnas);
+										ctx3.fill();
+										ctx3.stroke();
+									}
+									Hover(pieza3C);
 								}
 							}
-						console.log(e.offsetX +" "+ e.offsetY+ " "+ haTocado3);
 						}
 					}
 				}
 			}
-
+		}
+	}
 }
 
 
@@ -997,33 +975,30 @@ function tableroPiezas(texto){
 	let pieza = document.querySelector('#'+texto);
 	pieza.width = tablonPiezas;
 	pieza.height = tablonPiezas;
-
 	p = pieza.getContext('2d');
 	p.strokeStyle = "#333";
-	p.fillStyle = '#20B2AA'; // Se establece el color
+	p.fillStyle = '#20B2AA'; 
 	p.lineWidth = 2;	
-	
-
-		for(i = 0; i<pieza.height; i=i+columnas5x5){
-			for(j = 0; j<=pieza.height; j=j+fila5x5){
-				p.strokeRect(i, j, filas, columnas);
-				p.fillRect(i, j, filas, columnas);
-			}
+	for(i = 0; i < pieza.height; i=i+columnas5x5){
+		for(j = 0; j <= pieza.height; j=j+fila5x5){
+			p.strokeRect(i, j, filas, columnas);
+			p.fillRect(i, j, filas, columnas);
 		}
-		p.stroke();	
+	}
+	p.stroke();	
 }
+
 function vaciarTableroPiezas(num){
 	let peace = document.querySelector('#pieza'+num);
 	pe = peace.getContext('2d');
 	pe.clearRect(0,0,innerWidth,innerHeight);
 }
+
 function InicializarMatrices(){
 	MatrizTablero = [];
-	///Inicializar
 	for(var i=0; i<casillas; i++)
 	{
 		MatrizTablero[i] = [];
-
 		for(var j=0; j<casillas; j++)
 		{
 			MatrizTablero[i][j] = [0,'#20B2AA'];
@@ -1031,10 +1006,6 @@ function InicializarMatrices(){
 	}
 }
 
-
-
-
-//------------------------------------------------------ FUNCIONES OPCIONALES --------------------------------------////
 function sound(src) {
   this.sound = document.createElement("audio");
   this.sound.src = src;
