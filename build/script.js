@@ -192,7 +192,6 @@ function Hover(pieza){
 	ctxTablero = cvsTablero.getContext('2d');
 	cvsTablero.onmousemove = function(e){
 		ctxTablero.fillStyle = pieza.color;
-		var ocupada = false;
 		if(haTocado1 == true || haTocado2 == true || haTocado3 == true){
 			ctxTablero.fillStyle = pieza.color;
 			fila = Math.trunc(e.offsetX/dimension);
@@ -350,7 +349,6 @@ function endGame(){
 		}
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
-			console.log("Se acabo: "+gameOver);
 			restart();
 		}
 	}
@@ -367,7 +365,6 @@ function endGame(){
 		}
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
-			console.log("Se acabo: "+gameOver);
 			restart();
 		}
 	}
@@ -384,7 +381,6 @@ function endGame(){
 		}
 		if(imposible1 == true && imposible2 == true && imposible3 == true){
 			gameOver = true;
-			console.log("Se acabo: "+gameOver);
 			restart();
 		}
 	}
@@ -394,17 +390,10 @@ function endGame(){
 function restart(){
 	let cambiarDisplayModal = document.querySelector('#mensajemodal');
 	let mensajeModal = document.querySelector('.contenidomodal');
-	mensajeModal.innerHTML = `<h2 class="errorModal">Has Perdido</h2>
+	mensajeModal.innerHTML = `<h2 class="errorModal">You lost</h2>
 	<div class="modalcontent">
-		<h3>Puntuacion: `+puntuacion+`</h3>
-		<form onsubmit="return closeModal(1);" id="guardarPlayer">
-			<p>
-				<label for="nombreJugador"><strong>Nombre Jugador: </strong></label>
-				<input class="contenedorLogin inputlogin" id="nombreJugador" type="text" name="nombre"  placeholder="Nombre Jugador" autocomplete="on">
-				<input  id="punts" type="hidden" name="puntos"  value="`+puntuacion+`">
-			</p>
-				<input class="inputloginsummit"  type="submit" value="Volver a jugar"><br>
-		</form>
+		<h3>Punctuation: `+puntuacion+`</h3>
+		<button class="inputloginsummit" onclick="return closeModal(1)">Play again</button>
 		<br>
 	</div>`;
 	cambiarDisplayModal.style.display = "block";
@@ -836,8 +825,94 @@ function Piezas(){
 		cvs1.addEventListener("click", click(pieza1C),false);
 		cvs2.addEventListener("click", click(pieza2C),false);
 		cvs3.addEventListener("click", click(pieza3C),false);
+
+		hoverPiezaCursor(pieza1C);
+		hoverPiezaCursor(pieza2C);
+		hoverPiezaCursor(pieza3C);
 	}
 }
+
+function hoverPiezaCursor(pieza){
+	if(pieza == pieza1C){
+		let cvs1 = document.querySelector('#pieza1');
+		ctx1 = cvs1.getContext('2d');
+		cvs1.onmousemove = function(e){
+			if(!vacia1){
+				let filass = Math.floor(e.offsetX);
+				let columnass = Math.floor(e.offsetY);
+				let hover = false;
+				for(var x = 0; x < pieza1C.base.length;x++){
+					let posicionX = pieza1C.coordenadas[x][0];
+					let posicionY = pieza1C.coordenadas[x][1];
+					if(filass >= posicionX && filass < (posicionX+fila5x5)){
+						if(columnass >= posicionY && columnass < (posicionY+fila5x5)){
+							hover = true;
+						}
+					}
+					if(hover && !haTocado2 && !haTocado3){
+						document.querySelector('#pieza1').className = "hoverCursor";
+					}
+					else{
+						document.querySelector('#pieza1').classList.remove("hoverCursor");
+					}
+				}
+			}
+		}
+	}
+	else if(pieza == pieza2C){
+		let cvs2 = document.querySelector('#pieza2');
+		ctx2 = cvs2.getContext('2d');
+		cvs2.onmousemove = function(e){
+			if(!vacia2){
+				let filass = Math.floor(e.offsetX);
+				let columnass = Math.floor(e.offsetY);
+				let hover = false;
+				for(var x = 0; x < pieza2C.base.length;x++){
+					let posicionX = pieza2C.coordenadas[x][0];
+					let posicionY = pieza2C.coordenadas[x][1];
+					if(filass >= posicionX && filass < (posicionX+fila5x5)){
+						if(columnass >= posicionY && columnass < (posicionY+fila5x5)){
+							hover = true;
+						}
+					}
+					if(hover && !haTocado3 && !haTocado1){
+						document.querySelector('#pieza2').className = "hoverCursor";
+					}
+					else{
+						document.querySelector('#pieza2').classList.remove("hoverCursor");
+					}
+				}
+			}
+		}
+	}
+	else if(pieza == pieza3C){
+		let cvs3 = document.querySelector('#pieza3');
+		ctx3 = cvs3.getContext('2d');
+		cvs3.onmousemove = function(e){
+			if(!vacia3){
+				let filass = Math.floor(e.offsetX);
+				let columnass = Math.floor(e.offsetY);
+				let hover = false;
+				for(var x = 0; x < pieza3C.base.length;x++){
+					let posicionX = pieza3C.coordenadas[x][0];
+					let posicionY = pieza3C.coordenadas[x][1];
+					if(filass >= posicionX && filass < (posicionX+fila5x5)){
+						if(columnass >= posicionY && columnass < (posicionY+fila5x5)){
+							hover = true;
+						}
+					}
+					if(hover && !haTocado1 && !haTocado2){
+						document.querySelector('#pieza3').className = "hoverCursor";
+					}
+					else{
+						document.querySelector('#pieza3').classList.remove("hoverCursor");
+					}
+				}
+			}
+		}
+	}
+}
+
 function click(variable){
 	if(variable == pieza1C){
 		let cvs1 = document.querySelector('#pieza1');
@@ -859,6 +934,7 @@ function click(variable){
 										ctx1.strokeRect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
 										ctx1.rect(pieza1C.coordenadas[g][0], pieza1C.coordenadas[g][1], filas, columnas);
 										ctx1.fill();
+							
 										ctx1.stroke();
 									}
 									haTocado1 = false;

@@ -5,7 +5,7 @@ const {CacheFirst} = workbox.strategies;
 const {CacheableResponse} = workbox.cacheableResponse;
 
 registerRoute(
-  ({url}) => url.origin === 'https://fonts.googleapis.com',
+  ({url}) => url.origin === 'https://fonts.googleapis.com/css?family=Kaushan+Script',
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: 'google-fonts-stylesheets',
   })

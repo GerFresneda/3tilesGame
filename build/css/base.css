@@ -81,17 +81,20 @@ body{
 	font-weight: 700;
 	color: white;
 	font-family: 'Kaushan Script', cursive;
-	margin-left: 10px;
 	height: 60%;
 }
 .subtitulo{
-	margin-left: 10px;
+	display: flex;
+	justify-content: center;
 }
 .contenedorloginegro{
 	background-color: #333;
 	overflow: auto;
 	color: white;
 	text-align: center;
+}
+.hoverCursor{
+	cursor: pointer;
 }
 .contenedorLogin{
 	background-color: #20B2AA;
@@ -156,6 +159,7 @@ canvas{
 	color: white;
 	padding: 7px 10px;
 	margin: 8px 0;
+	cursor: pointer;
 }
 .inputloginsummit{
 	width: 100%;
