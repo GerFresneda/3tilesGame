@@ -37,8 +37,20 @@ body{
 	position: fixed; /* Hacemos que la cabecera tenga una posición fija */
 	z-index: 10;
 }
+.link{
+	cursor: pointer;
+	filter: invert(100%) sepia(100%) saturate(2%) hue-rotate(24deg) brightness(106%) contrast(101%);
+}
+.link:hover{
+	filter: invert(88%) sepia(91%) saturate(2771%) hue-rotate(359deg) brightness(100%) contrast(103%);
+}
+.links{
+	margin-left: 10px;
+}
 #main-footer {
-	display: block;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 	background: #333;
 	color: white;
 	height: 80px;
