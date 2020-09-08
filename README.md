@@ -5,3 +5,5 @@ If you want to test it out, click on any of the links bellow!
 
 * [3Pieces on Firebase as a PWA](https://pieces3.web.app/)
 * [3Pieces on GitHub Pages](https://gerfresneda.github.io/3tilesGame/)
+
+:warning: **Right now it is only a web application version, it's not adapted for mobile devices!** :warning:
