@@ -1,4 +1,5 @@
 {
+  "homepage": "https://gerfresneda.github.io/3tilesGame/",
   "name": "practica03",
   "version": "1.0.0",
   "description": "",
@@ -6,9 +7,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "http-server -p 1336 build -c-1",
-    "deploy": "workbox generateSW"
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "gh-pages": "^3.1.0"
+  }
 }
