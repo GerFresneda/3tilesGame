@@ -3,5 +3,5 @@ Simple javascript game similar to tetris where the player has three blocks. A ra
 
 If you want to test it out, click on any of the links bellow!
 
-* [3Pieces - GitHub.io](https://pieces3.web.app/)
-* [3Pieces - Firebase](https://gerfresneda.github.io/3tilesGame/)
+* [3Pieces on GitHub.io as a PWA](https://pieces3.web.app/)
+* [3Pieces on Firebase](https://gerfresneda.github.io/3tilesGame/)
