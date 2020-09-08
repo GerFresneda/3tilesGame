@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es"> 
+<!-- La cabecera --> 
+	<head> 
+		<meta charset="utf-8" /> 
+		<meta name="generator" content="Sublime Text" /> 
+		<meta name="author" content="German Fresneda" /> 
+		<meta name="keywords" content="HTML5, web" /> 
+		<meta name="description" content="Pagina web de PCW" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" content="#317EFB"/>
+		<link rel="apple-touch-icon" href="/build/images/icono.png">
+        <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
+        <link href="css/base.css" rel='stylesheet' type='text/css' />
+		<link rel="manifest" href="mannifest.json">
+		<link rel="icon" href="images/Logo.svg" type="image/svg">
+		<script  src="script.js"></script>
+		 <script defer src="/__/firebase/7.19.1/firebase-app.js"></script>
+		 <script defer src="/__/firebase/7.19.1/firebase-auth.js"></script>
+		 <script defer src="/__/firebase/7.19.1/firebase-database.js"></script>
+		 <script defer src="/__/firebase/7.19.1/firebase-messaging.js"></script>
+		 <script defer src="/__/firebase/7.19.1/firebase-storage.js"></script>
+		 <script defer src="/__/firebase/init.js"></script>
+		<title>3Pieces</title> 
+	</head>
+	<body onload="prepararTablero();">
+		<header id="main-header">
+			<div class="flex">
+				<a  href="index.html">
+					<img class="center" src="images/Logo.svg" alt="3Pieces" width="110" height="80">
+				</a>
+				<div>
+					<span class="titulo">3Pieces</span>
+					<span class="subtitulo">Break 'em all!</span>
+				</div>
+			</div>
+		</header><!-- / #main-header -->
+			<div class="Row">
+				<div id="mensajemodal" class="modal">
+						<div class="contenidomodal">
+						</div>
+				</div>
+				<div class="busqueda">
+					<div class="contenedorloginegro">
+						<h2>Game panel</h2>
+					</div>
+				    <div class="contenedorLogin">
+				    	<div class="puntuacion">
+				    		<h4>Punctuation</h4>
+				    		<div id="puntos"></div>
+				    	</div>
+				    	<canvas id="cv1">
+
+				    	</canvas>
+				    </div>
+				</div>
+				<div class="resultado">
+					<div class="contenedorloginegro">
+						<h2>Pieces</h2>
+					</div>
+					<div class="contenedorLogin">
+				    	<br>
+				    	<canvas id="pieza1"></canvas>
+				    	<br>
+				    	<canvas id="pieza2"></canvas>
+				    	<br>
+				    	<canvas id="pieza3"></canvas>
+				    </div>    	
+				</div>
+			</div>
+			
+
+
+		
+		<footer id="main-footer">
+			<div>&copy; 2019 Germ&aacute;n Fresneda Gomis</div>
+			<div class="links">
+				<a  href="https://github.com/GerFresneda" target="_blank"><img class="link" src="images/icons8-github-64.png" height="45px" alt="github"></a>
+				<a  href="https://www.linkedin.com/in/gerfresneda/" target="_blank"><img class="link" src="images/icons8-linkedin-64.png" height="45px" alt="linkedin"></a>
+			</div>
+		</footer> <!-- / #main-footer -->
+		<script>
+			if('serviceWorker' in navigator){
+				window.addEventListener('load',()=>{
+					navigator.serviceWorker.register('/sw.js');
+				});
+			}
+		</script>
+		<script src="/__/firebase/7.19.1/firebase-app.js"></script>
+		<script src="/__/firebase/7.19.1/firebase-analytics.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				try {
+				let app = firebase.app();
+				let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+				} catch (e) {
+				console.error(e);
+				}
+			});
+		</script>
+	</body>	
+</html> 
