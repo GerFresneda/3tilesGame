@@ -350,6 +350,7 @@ canvas{
 		border-color: #333;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 		background-color: #20B2AA;
+		margin-bottom: 15px;
 	}
 	.resultado{
 		border-style: ridge;
@@ -376,6 +377,15 @@ canvas{
 	}
 	#cv1{
 		overflow: auto;
+		width: 150px;
+		height: 150px;
+	}
+	#pieza1, #pieza2, #pieza3 {
+		width: 75px;
+		height: 75px;
+	}
+	.resultado .contenedorLogin {
+		display: flex;
 	}
 	#customers {
 	  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -395,5 +405,8 @@ canvas{
 	  background-color: #333;
 	  color: white;
 	  width: 100%;
+	}
+	.links {
+		display: flex;
 	}
 }

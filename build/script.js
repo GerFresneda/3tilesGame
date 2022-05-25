@@ -1,6 +1,16 @@
+// LET
+let tablero = $(window).width() > 570 ? 300 : 150;
+$(window).resize(function(){
+	let anchoVentana = $(window).width();
+	if ( anchoVentana > 570 && tablero !== 300 ) {
+		tablero = 300;
+	} else if ( anchoVentana < 570 && tablero !== 150 ) {
+		tablero = 150;
+	}
+})
+
 // CONSTS 
 const casillas = 10,
-tablero = 300,
 dimension = Number(tablero/casillas),
 columnas = Number(tablero/10),
 filas = Number(tablero/10),
